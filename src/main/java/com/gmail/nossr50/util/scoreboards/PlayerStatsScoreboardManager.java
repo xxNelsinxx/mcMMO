@@ -1,4 +1,4 @@
-package com.gmail.nossr50.util;
+package com.gmail.nossr50.util.scoreboards;
 
 import org.bukkit.Server;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -10,21 +10,21 @@ import com.gmail.nossr50.datatypes.player.PlayerProfile;
 import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.util.skills.SkillUtils;
 
-public class ScoreboardUtils {
+public class PlayerStatsScoreboardManager {
     public final static String STATS_HEADER = "mcMMO Stats";
     private static Objective stats;
 
-    public static void setupStatsScoreboard(McMMOPlayer mcMMOPlayer) {
+    public static void setupScoreboard(McMMOPlayer mcMMOPlayer) {
         PlayerProfile profile = mcMMOPlayer.getProfile();
-        profile.setStatsScoreboard(mcMMO.p.getServer().getScoreboardManager().getNewScoreboard());
+        profile.setPlayerStatsScoreboard(mcMMO.p.getServer().getScoreboardManager().getNewScoreboard());
 
-        stats = profile.getStatsScoreboard().registerNewObjective(STATS_HEADER, "SKILL_LEVELS");
+        stats = profile.getPlayerStatsScoreboard().registerNewObjective(STATS_HEADER, "SKILL_LEVELS");
         stats.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
-    public static void enableStatsScoreboard(McMMOPlayer mcMMOPlayer) {
+    public static void enableScoreboard(McMMOPlayer mcMMOPlayer) {
         updateScores(mcMMOPlayer);
-        mcMMOPlayer.getPlayer().setScoreboard(mcMMOPlayer.getProfile().getStatsScoreboard());
+        mcMMOPlayer.getPlayer().setScoreboard(mcMMOPlayer.getProfile().getPlayerStatsScoreboard());
     }
 
     public static void updateScore(McMMOPlayer mcMMOPlayer, SkillType skill) {

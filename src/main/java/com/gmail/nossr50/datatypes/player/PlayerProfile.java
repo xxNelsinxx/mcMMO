@@ -31,7 +31,7 @@ public class PlayerProfile {
     private McMMOHud spoutHud;
     private HudType  hudType;
     private MobHealthbarType mobHealthbarType;
-    private Scoreboard statsScoreboard;
+    private Scoreboard playerStatsScoreboard;
 
     // mySQL Stuff
     private int userId;
@@ -572,12 +572,12 @@ public class PlayerProfile {
      * Scoreboards
      */
 
-    public Scoreboard getStatsScoreboard() {
-        return statsScoreboard;
+    public Scoreboard getPlayerStatsScoreboard() {
+        return playerStatsScoreboard;
     }
 
-    public void setStatsScoreboard(Scoreboard statsScoreboard) {
-        this.statsScoreboard = statsScoreboard;
+    public void setPlayerStatsScoreboard(Scoreboard statsScoreboard) {
+        this.playerStatsScoreboard = statsScoreboard;
     }
 
     /*

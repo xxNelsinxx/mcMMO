@@ -11,9 +11,9 @@ import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.datatypes.player.PlayerProfile;
 import com.gmail.nossr50.locale.LocaleLoader;
-import com.gmail.nossr50.util.ScoreboardUtils;
 import com.gmail.nossr50.util.commands.CommandUtils;
 import com.gmail.nossr50.util.player.UserManager;
+import com.gmail.nossr50.util.scoreboards.PlayerStatsScoreboardManager;
 
 import com.google.common.collect.ImmutableList;
 
@@ -31,12 +31,12 @@ public class McstatsCommand implements TabExecutor {
                 PlayerProfile profile = mcMMOPlayer.getProfile();
 
                 if (Config.getInstance().getScoreboardsEnabled()) {
-                    if (profile.getStatsScoreboard() == null) {
-                        ScoreboardUtils.setupStatsScoreboard(mcMMOPlayer);
+                    if (profile.getPlayerStatsScoreboard() == null) {
+                        PlayerStatsScoreboardManager.setupScoreboard(mcMMOPlayer);
                     }
 
-                    if (player.getScoreboard() != profile.getStatsScoreboard()) {
-                        ScoreboardUtils.enableStatsScoreboard(mcMMOPlayer);
+                    if (player.getScoreboard() != profile.getPlayerStatsScoreboard()) {
+                        PlayerStatsScoreboardManager.enableScoreboard(mcMMOPlayer);
                     }
                 }
 
