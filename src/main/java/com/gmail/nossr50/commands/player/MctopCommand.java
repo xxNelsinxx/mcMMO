@@ -28,6 +28,9 @@ public class MctopCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         boolean useMySQL = Config.getInstance().getUseMySQL();
 
+        if (Config.getInstance().getScoreboardsEnabled()) {
+            
+        }
 
         switch (args.length) {
             case 0:
