@@ -30,12 +30,14 @@ public class McstatsCommand implements TabExecutor {
                 Player player = mcMMOPlayer.getPlayer();
                 PlayerProfile profile = mcMMOPlayer.getProfile();
 
-                if (profile.getStatsScoreboard() == null) {
-                    ScoreboardUtils.setupStatsScoreboard(mcMMOPlayer);
-                }
+                if (Config.getInstance().getScoreboardsEnabled()) {
+                    if (profile.getStatsScoreboard() == null) {
+                        ScoreboardUtils.setupStatsScoreboard(mcMMOPlayer);
+                    }
 
-                if (player.getScoreboard() != profile.getStatsScoreboard()) {
-                    ScoreboardUtils.enableStatsScoreboard(mcMMOPlayer);
+                    if (player.getScoreboard() != profile.getStatsScoreboard()) {
+                        ScoreboardUtils.enableStatsScoreboard(mcMMOPlayer);
+                    }
                 }
 
                 player.sendMessage(LocaleLoader.getString("Stats.Own.Stats"));

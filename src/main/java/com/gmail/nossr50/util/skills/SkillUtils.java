@@ -273,7 +273,9 @@ public class SkillUtils {
             }
         }
 
-        ScoreboardUtils.updateScore(UserManager.getPlayer(player), skillType);
+        if (Config.getInstance().getScoreboardsEnabled()) {
+            ScoreboardUtils.updateScore(UserManager.getPlayer(player), skillType);
+        }
     }
 
     /**

@@ -26,6 +26,8 @@ General:
     Verbose_Logging: false
     # Should mcMMO over-write configs to update, or make new ones ending in .new?
     Config_Update_Overwrite: true
+    # Should mcMMO use the scoreboards when available?
+    Use_Scoreboards: true
 
 Mob_Healthbar:
     # Default display for mob health bars - HEARTS, BAR, or DISABLED

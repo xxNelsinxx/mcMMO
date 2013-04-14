@@ -45,6 +45,7 @@ public class Config extends AutoUpdateConfigLoader {
     public boolean getBackupsEnabled() { return config.getBoolean("General.Generate_Backups", true); }
     public boolean getVerboseLoggingEnabled() { return config.getBoolean("General.Verbose_Logging", false); }
     public boolean getConfigOverwriteEnabled() { return config.getBoolean("General.Config_Update_Overwrite", true); }
+    public boolean getScoreboardsEnabled() { return config.getBoolean("General.Use_Scoreboards", true); }
 
     public boolean getPartyDisplayNames() { return config.getBoolean("Commands.p.Use_Display_Names", true); }
     public boolean getAdminDisplayNames() { return config.getBoolean("Commands.a.Use_Display_Names", true); }
