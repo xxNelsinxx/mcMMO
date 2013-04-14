@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 
 import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
+import com.gmail.nossr50.datatypes.player.PlayerProfile;
 import com.gmail.nossr50.locale.LocaleLoader;
+import com.gmail.nossr50.util.ScoreboardUtils;
 import com.gmail.nossr50.util.commands.CommandUtils;
 import com.gmail.nossr50.util.player.UserManager;
 
@@ -26,6 +28,15 @@ public class McstatsCommand implements TabExecutor {
             case 0:
                 McMMOPlayer mcMMOPlayer = UserManager.getPlayer(sender.getName());
                 Player player = mcMMOPlayer.getPlayer();
+                PlayerProfile profile = mcMMOPlayer.getProfile();
+
+                if (profile.getStatsScoreboard() == null) {
+                    ScoreboardUtils.setupStatsScoreboard(mcMMOPlayer);
+                }
+
+                if (player.getScoreboard() != profile.getStatsScoreboard()) {
+                    ScoreboardUtils.enableStatsScoreboard(mcMMOPlayer);
+                }
 
                 player.sendMessage(LocaleLoader.getString("Stats.Own.Stats"));
                 player.sendMessage(LocaleLoader.getString("mcMMO.NoSkillNote"));

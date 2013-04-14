@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.scoreboard.Scoreboard;
+
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.config.spout.SpoutConfig;
@@ -29,6 +31,7 @@ public class PlayerProfile {
     private McMMOHud spoutHud;
     private HudType  hudType;
     private MobHealthbarType mobHealthbarType;
+    private Scoreboard statsScoreboard;
 
     // mySQL Stuff
     private int userId;
@@ -566,6 +569,18 @@ public class PlayerProfile {
     }
 
     /*
+     * Scoreboards
+     */
+
+    public Scoreboard getStatsScoreboard() {
+        return statsScoreboard;
+    }
+
+    public void setStatsScoreboard(Scoreboard statsScoreboard) {
+        this.statsScoreboard = statsScoreboard;
+    }
+
+    /*
      * Cooldowns
      */
 
@@ -637,6 +652,7 @@ public class PlayerProfile {
 
     public void skillUp(SkillType skillType, int newValue) {
         skills.put(skillType, skills.get(skillType) + newValue);
+        
     }
 
     /**

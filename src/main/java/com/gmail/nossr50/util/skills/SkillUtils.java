@@ -35,6 +35,7 @@ import com.gmail.nossr50.util.ItemUtils;
 import com.gmail.nossr50.util.Misc;
 import com.gmail.nossr50.util.ModUtils;
 import com.gmail.nossr50.util.Permissions;
+import com.gmail.nossr50.util.ScoreboardUtils;
 import com.gmail.nossr50.util.StringUtils;
 import com.gmail.nossr50.util.player.UserManager;
 import com.gmail.nossr50.util.spout.SpoutUtils;
@@ -271,6 +272,8 @@ public class SkillUtils {
                 }
             }
         }
+
+        ScoreboardUtils.updateScore(UserManager.getPlayer(player), skillType);
     }
 
     /**

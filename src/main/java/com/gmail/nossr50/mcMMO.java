@@ -12,6 +12,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.gmail.nossr50.config.AdvancedConfig;
 import com.gmail.nossr50.config.Config;
@@ -96,6 +97,9 @@ public class mcMMO extends JavaPlugin {
     public final static String droppedItemKey      = "mcMMO: Tracked Item";
 
     public static FixedMetadataValue metadataValue;
+
+    // Scoreboards
+    public Scoreboard statsScoreboard;
 
     /**
      * Things to be run when the plugin is enabled.
