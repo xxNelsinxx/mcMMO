@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import com.gmail.nossr50.mcMMO;
@@ -18,6 +19,7 @@ import com.gmail.nossr50.runnables.commands.MctopCommandAsyncTask;
 import com.gmail.nossr50.util.Permissions;
 import com.gmail.nossr50.util.StringUtils;
 import com.gmail.nossr50.util.commands.CommandUtils;
+import com.gmail.nossr50.util.scoreboards.ScoreboardManager;
 
 import com.google.common.collect.ImmutableList;
 
@@ -28,8 +30,8 @@ public class MctopCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         boolean useMySQL = Config.getInstance().getUseMySQL();
 
-        if (Config.getInstance().getScoreboardsEnabled()) {
-            
+        if (sender instanceof Player && Config.getInstance().getScoreboardsEnabled()) {
+            ScoreboardManager.setupGlobalStatsScoreboard();
         }
 
         switch (args.length) {
@@ -81,6 +83,10 @@ public class MctopCommand implements TabExecutor {
         if (!skill.equalsIgnoreCase("all") && !Permissions.mctop(sender, this.skill)) {
             sender.sendMessage(command.getPermissionMessage());
             return;
+        }
+
+        if (sender instanceof Player && Config.getInstance().getScoreboardsEnabled()) {
+            ScoreboardManager.enableGlobalStatsScoreboard((Player) sender, skill);
         }
 
         if (sql) {
