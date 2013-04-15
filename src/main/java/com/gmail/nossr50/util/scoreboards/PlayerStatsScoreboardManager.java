@@ -27,9 +27,7 @@ public class PlayerStatsScoreboardManager {
         mcMMOPlayer.getPlayer().setScoreboard(mcMMOPlayer.getProfile().getPlayerStatsScoreboard());
     }
 
-    public static void updateScore(McMMOPlayer mcMMOPlayer, SkillType skill) {
-        stats.getScore(mcMMO.p.getServer().getOfflinePlayer(SkillUtils.getSkillName(skill))).setScore(mcMMOPlayer.getProfile().getSkillLevel(skill));
-    }
+
 
     private static void updateScores(McMMOPlayer mcMMOPlayer) {
         PlayerProfile profile = mcMMOPlayer.getProfile();

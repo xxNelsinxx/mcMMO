@@ -9,12 +9,10 @@ import org.bukkit.entity.Player;
 
 import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
-import com.gmail.nossr50.datatypes.player.PlayerProfile;
 import com.gmail.nossr50.locale.LocaleLoader;
 import com.gmail.nossr50.util.commands.CommandUtils;
 import com.gmail.nossr50.util.player.UserManager;
-import com.gmail.nossr50.util.scoreboards.PlayerStatsScoreboardManager;
-
+import com.gmail.nossr50.util.scoreboards.ScoreboardManager;
 import com.google.common.collect.ImmutableList;
 
 public class McstatsCommand implements TabExecutor {
@@ -28,16 +26,10 @@ public class McstatsCommand implements TabExecutor {
             case 0:
                 McMMOPlayer mcMMOPlayer = UserManager.getPlayer(sender.getName());
                 Player player = mcMMOPlayer.getPlayer();
-                PlayerProfile profile = mcMMOPlayer.getProfile();
 
                 if (Config.getInstance().getScoreboardsEnabled()) {
-                    if (profile.getPlayerStatsScoreboard() == null) {
-                        PlayerStatsScoreboardManager.setupScoreboard(mcMMOPlayer);
-                    }
-
-                    if (player.getScoreboard() != profile.getPlayerStatsScoreboard()) {
-                        PlayerStatsScoreboardManager.enableScoreboard(mcMMOPlayer);
-                    }
+                    ScoreboardManager.setupPlayerStatsScoreboard(player.getName());
+                    ScoreboardManager.enablePlayerStatsScoreboard(mcMMOPlayer);
                 }
 
                 player.sendMessage(LocaleLoader.getString("Stats.Own.Stats"));

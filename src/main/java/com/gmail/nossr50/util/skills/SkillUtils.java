@@ -37,7 +37,7 @@ import com.gmail.nossr50.util.ModUtils;
 import com.gmail.nossr50.util.Permissions;
 import com.gmail.nossr50.util.StringUtils;
 import com.gmail.nossr50.util.player.UserManager;
-import com.gmail.nossr50.util.scoreboards.PlayerStatsScoreboardManager;
+import com.gmail.nossr50.util.scoreboards.ScoreboardManager;
 import com.gmail.nossr50.util.spout.SpoutUtils;
 
 public class SkillUtils {
@@ -274,7 +274,7 @@ public class SkillUtils {
         }
 
         if (Config.getInstance().getScoreboardsEnabled()) {
-            PlayerStatsScoreboardManager.updateScore(UserManager.getPlayer(player), skillType);
+            ScoreboardManager.updatePlayerStatsScore(UserManager.getPlayer(player), skillType);
         }
     }
 
