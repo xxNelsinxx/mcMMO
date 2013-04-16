@@ -368,6 +368,10 @@ public final class LeaderboardManager {
         return new int[] {0, 0};
     }
 
+    public static List<PlayerStat> getPlayerStats(String skillName) {
+        return (skillName.equalsIgnoreCase("all")) ? powerLevels : playerStatHash.get(SkillType.getSkill(skillName));
+    }
+
     private static class SkillComparator implements Comparator<PlayerStat> {
         @Override
         public int compare(PlayerStat o1, PlayerStat o2) {

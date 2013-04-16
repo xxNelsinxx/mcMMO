@@ -11,10 +11,11 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.gmail.nossr50.mcMMO;
+import com.gmail.nossr50.database.LeaderboardManager;
+import com.gmail.nossr50.datatypes.database.PlayerStat;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.datatypes.player.PlayerProfile;
 import com.gmail.nossr50.datatypes.skills.SkillType;
-import com.gmail.nossr50.util.player.UserManager;
 import com.gmail.nossr50.util.skills.SkillUtils;
 
 public class ScoreboardManager {
@@ -64,19 +65,9 @@ public class ScoreboardManager {
 
         globalStatsScoreboard = mcMMO.p.getServer().getScoreboardManager().getNewScoreboard();
 
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.ACROBATICS), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.ARCHERY), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.AXES), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.EXCAVATION), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.FISHING), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.HERBALISM), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.MINING), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.REPAIR), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.SMELTING), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.SWORDS), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.TAMING), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.UNARMED), PLAYER_STATS_CRITERIA);
-        globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(SkillType.WOODCUTTING), PLAYER_STATS_CRITERIA);
+        for (SkillType skill : SkillType.values()) {
+            globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(skill), PLAYER_STATS_CRITERIA);
+        }
 
         globalPowerlevel = globalStatsScoreboard.registerNewObjective(GLOBAL_STATS_POWER_LEVEL, PLAYER_STATS_CRITERIA);
     }
@@ -94,15 +85,17 @@ public class ScoreboardManager {
     }
 
     public static void enableGlobalStatsScoreboard(Player player, String skillName) {
-        if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) == globalStatsScoreboard.getObjective(DisplaySlot.SIDEBAR)) {
+        Scoreboard scoreboard = player.getScoreboard();
+        Objective objective = getGlobalObjective(skillName);
+
+        if (scoreboard.getObjective(DisplaySlot.SIDEBAR) == objective) {
             return;
         }
 
-        if (skillName.equalsIgnoreCase("ALL")) {
-            updateGlobalStatsScores();
-        }
-        else {
-            updateGlobalStatsScores(skillName);
+        updateGlobalStatsScores(objective, skillName);
+
+        if (scoreboard == globalStatsScoreboard) {
+            return;
         }
 
         player.setScoreboard(globalStatsScoreboard);
@@ -121,22 +114,24 @@ public class ScoreboardManager {
         }
     }
 
-    private static void updateGlobalStatsScores(String skillName) {
-        SkillType skill = SkillType.getSkill(skillName);
-        Objective objective = globalStatsScoreboard.getObjective(skillName);
+    private static void updateGlobalStatsScores(Objective objective, String skillName) {
+        Server server = mcMMO.p.getServer();
 
-        for (McMMOPlayer mcMMOPlayer : UserManager.getPlayers().values()) {
-            objective.getScore(mcMMOPlayer.getPlayer()).setScore(mcMMOPlayer.getProfile().getSkillLevel(skill));
+        int i = 0;
+
+        for (PlayerStat stat : LeaderboardManager.getPlayerStats(skillName)) {
+            if (i > 14) {
+                break;
+            }
+
+            objective.getScore(server.getOfflinePlayer(stat.name)).setScore(stat.statVal);
+            i++;
         }
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
-    private static void updateGlobalStatsScores() {
-        for (McMMOPlayer mcMMOPlayer : UserManager.getPlayers().values()) {
-            globalPowerlevel.getScore(mcMMOPlayer.getPlayer()).setScore(mcMMOPlayer.getPowerLevel());
-        }
-
-        globalPowerlevel.setDisplaySlot(DisplaySlot.SIDEBAR);
+    private static Objective getGlobalObjective(String skillName) {
+        return skillName.equalsIgnoreCase("all") ? globalPowerlevel : globalStatsScoreboard.getObjective(SkillUtils.getSkillName(SkillType.getSkill(skillName)));
     }
 }
