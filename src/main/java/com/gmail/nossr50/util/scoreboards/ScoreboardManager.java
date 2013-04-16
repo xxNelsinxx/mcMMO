@@ -66,6 +66,10 @@ public class ScoreboardManager {
         globalStatsScoreboard = mcMMO.p.getServer().getScoreboardManager().getNewScoreboard();
 
         for (SkillType skill : SkillType.values()) {
+            if (skill.isChildSkill()) {
+                continue;
+            }
+
             globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(skill), PLAYER_STATS_CRITERIA);
         }
 
@@ -110,6 +114,10 @@ public class ScoreboardManager {
         Server server = mcMMO.p.getServer();
 
         for (SkillType skill : SkillType.values()) {
+            if (skill.isChildSkill()) {
+                continue;
+            }
+
             playerStats.getScore(server.getOfflinePlayer(SkillUtils.getSkillName(skill))).setScore(profile.getSkillLevel(skill));
         }
     }
