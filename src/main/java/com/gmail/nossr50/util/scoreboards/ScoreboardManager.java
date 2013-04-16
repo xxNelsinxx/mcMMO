@@ -3,6 +3,7 @@ package com.gmail.nossr50.util.scoreboards;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -38,7 +39,6 @@ public class ScoreboardManager {
     public static Scoreboard globalStatsScoreboard;
 
     private static Objective playerStats;
-    private static Objective globalPowerlevel;
 
     public final static String PLAYER_STATS_HEADER   = "mcMMO Stats";
     public final static String PLAYER_STATS_CRITERIA = "Player Skill Levels";
@@ -64,16 +64,6 @@ public class ScoreboardManager {
         }
 
         globalStatsScoreboard = mcMMO.p.getServer().getScoreboardManager().getNewScoreboard();
-
-        for (SkillType skill : SkillType.values()) {
-            if (skill.isChildSkill()) {
-                continue;
-            }
-
-            globalStatsScoreboard.registerNewObjective(SkillUtils.getSkillName(skill), PLAYER_STATS_CRITERIA);
-        }
-
-        globalPowerlevel = globalStatsScoreboard.registerNewObjective(GLOBAL_STATS_POWER_LEVEL, PLAYER_STATS_CRITERIA);
     }
 
     public static void enablePlayerStatsScoreboard(McMMOPlayer mcMMOPlayer) {
@@ -88,17 +78,19 @@ public class ScoreboardManager {
         player.setScoreboard(scoreboard);
     }
 
-    public static void enableGlobalStatsScoreboard(Player player, String skillName) {
-        Scoreboard scoreboard = player.getScoreboard();
-        Objective objective = getGlobalObjective(skillName);
+    public static void enableGlobalStatsScoreboard(Player player, String skillName, int pageNumber) {
+        Objective oldObjective = globalStatsScoreboard.getObjective(skillName);
 
-        if (scoreboard.getObjective(DisplaySlot.SIDEBAR) == objective) {
-            return;
+        if (oldObjective != null) {
+            oldObjective.unregister();
         }
 
-        updateGlobalStatsScores(objective, skillName);
+        Objective newObjective = globalStatsScoreboard.registerNewObjective(skillName, PLAYER_STATS_CRITERIA);
+        newObjective.setDisplayName(ChatColor.GOLD + (skillName.equalsIgnoreCase("all") ? GLOBAL_STATS_POWER_LEVEL : SkillUtils.getSkillName(SkillType.getSkill(skillName))));
 
-        if (scoreboard == globalStatsScoreboard) {
+        updateGlobalStatsScores(player, newObjective, skillName, pageNumber);
+
+        if (player.getScoreboard() == globalStatsScoreboard) {
             return;
         }
 
@@ -122,24 +114,21 @@ public class ScoreboardManager {
         }
     }
 
-    private static void updateGlobalStatsScores(Objective objective, String skillName) {
+    private static void updateGlobalStatsScores(Player player, Objective objective, String skillName, int pageNumber) {
         Server server = mcMMO.p.getServer();
+        int position = (pageNumber * 15) - 14;
 
-        int i = 0;
+        String startPosition = ((position < 10) ? "0" : "") + String.valueOf(position);
+        String endPosition = String.valueOf(position + 14);
 
-        for (PlayerStat stat : LeaderboardManager.getPlayerStats(skillName)) {
-            if (i > 14) {
-                break;
-            }
+        for (PlayerStat stat : LeaderboardManager.retrieveInfo(skillName, pageNumber, 15)) {
+            String playerName = stat.name;
+            playerName = (playerName.equals(player.getName()) ? ChatColor.GOLD : "") + playerName;
 
-            objective.getScore(server.getOfflinePlayer(stat.name)).setScore(stat.statVal);
-            i++;
+            objective.getScore(server.getOfflinePlayer(playerName)).setScore(stat.statVal);
         }
 
+        objective.setDisplayName(objective.getDisplayName() + " (" + startPosition + " - " + endPosition + ")");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-    }
-
-    private static Objective getGlobalObjective(String skillName) {
-        return skillName.equalsIgnoreCase("all") ? globalPowerlevel : globalStatsScoreboard.getObjective(SkillUtils.getSkillName(SkillType.getSkill(skillName)));
     }
 }

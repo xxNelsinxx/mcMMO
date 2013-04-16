@@ -45,7 +45,6 @@ public class Config extends AutoUpdateConfigLoader {
     public boolean getBackupsEnabled() { return config.getBoolean("General.Generate_Backups", true); }
     public boolean getVerboseLoggingEnabled() { return config.getBoolean("General.Verbose_Logging", false); }
     public boolean getConfigOverwriteEnabled() { return config.getBoolean("General.Config_Update_Overwrite", true); }
-    public boolean getScoreboardsEnabled() { return config.getBoolean("General.Use_Scoreboards", true); }
 
     public boolean getPartyDisplayNames() { return config.getBoolean("Commands.p.Use_Display_Names", true); }
     public boolean getAdminDisplayNames() { return config.getBoolean("Commands.a.Use_Display_Names", true); }
@@ -61,6 +60,12 @@ public class Config extends AutoUpdateConfigLoader {
     }
 
     public int getMobHealthbarTime() { return config.getInt("Mob_Healthbar.Display_Time", 3); }
+
+    /* Scoreboards */
+    public boolean getScoreboardsEnabled() { return config.getBoolean("Scoreboards.Use_Scoreboards", true); }
+
+    public boolean getMctopScoreboardEnabled() { return config.getBoolean("Scoreboards.Mctop.Use", true); }
+    public int getMctopScoreboardTime() { return config.getInt("Scoreboards.Mctop.Display_Time", 10); }
 
     /* Database Purging */
     public int getPurgeInterval() { return config.getInt("Database_Purging.Purge_Interval", -1); }
