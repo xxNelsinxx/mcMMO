@@ -12,11 +12,13 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.gmail.nossr50.mcMMO;
+import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.database.LeaderboardManager;
 import com.gmail.nossr50.datatypes.database.PlayerStat;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.datatypes.player.PlayerProfile;
 import com.gmail.nossr50.datatypes.skills.SkillType;
+import com.gmail.nossr50.runnables.scoreboards.ScoreboardChangeTask;
 import com.gmail.nossr50.util.skills.SkillUtils;
 
 public class ScoreboardManager {
@@ -80,6 +82,7 @@ public class ScoreboardManager {
 
     public static void enableGlobalStatsScoreboard(Player player, String skillName, int pageNumber) {
         Objective oldObjective = globalStatsScoreboard.getObjective(skillName);
+        Scoreboard oldScoreboard = player.getScoreboard();
 
         if (oldObjective != null) {
             oldObjective.unregister();
@@ -90,11 +93,17 @@ public class ScoreboardManager {
 
         updateGlobalStatsScores(player, newObjective, skillName, pageNumber);
 
-        if (player.getScoreboard() == globalStatsScoreboard) {
+        if (oldScoreboard == globalStatsScoreboard) {
             return;
         }
 
         player.setScoreboard(globalStatsScoreboard);
+
+        int displayTime = Config.getInstance().getMctopScoreboardTime();
+
+        if (displayTime != -1) {
+            new ScoreboardChangeTask(player, oldScoreboard).runTaskLater(mcMMO.p, displayTime * 20);
+        }
     }
 
     public static void updatePlayerStatsScore(McMMOPlayer mcMMOPlayer, SkillType skill) {
