@@ -1,5 +1,6 @@
 package com.gmail.nossr50.util.scoreboards;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.config.Config;
+import com.gmail.nossr50.database.DatabaseManager;
 import com.gmail.nossr50.database.LeaderboardManager;
 import com.gmail.nossr50.datatypes.database.PlayerStat;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
@@ -124,17 +126,30 @@ public class ScoreboardManager {
     }
 
     private static void updateGlobalStatsScores(Player player, Objective objective, String skillName, int pageNumber) {
-        Server server = mcMMO.p.getServer();
         int position = (pageNumber * 15) - 14;
-
         String startPosition = ((position < 10) ? "0" : "") + String.valueOf(position);
         String endPosition = String.valueOf(position + 14);
+        Server server = mcMMO.p.getServer();
 
-        for (PlayerStat stat : LeaderboardManager.retrieveInfo(skillName, pageNumber, 15)) {
-            String playerName = stat.name;
-            playerName = (playerName.equals(player.getName()) ? ChatColor.GOLD : "") + playerName;
+        if (Config.getInstance().getUseMySQL()) {
+            String tablePrefix = Config.getInstance().getMySQLTablePrefix();
+            String query = (skillName.equalsIgnoreCase("all") ? "taming+mining+woodcutting+repair+unarmed+herbalism+excavation+archery+swords+axes+acrobatics+fishing" : skillName);
+            final HashMap<Integer, ArrayList<String>> userslist = DatabaseManager.read("SELECT " + query + ", user, NOW() FROM " + tablePrefix + "users JOIN " + tablePrefix + "skills ON (user_id = id) WHERE " + query + " > 0 ORDER BY " + query + " DESC, user LIMIT " + ((pageNumber * 15) - 15) + ",15");
 
-            objective.getScore(server.getOfflinePlayer(playerName)).setScore(stat.statVal);
+            for (ArrayList<String> stat : userslist.values()) {
+                String playerName = stat.get(1);
+                playerName = (playerName.equals(player.getName()) ? ChatColor.GOLD : "") + playerName;
+
+                objective.getScore(server.getOfflinePlayer(playerName)).setScore(Integer.valueOf(stat.get(0)));
+            }
+        }
+        else {
+            for (PlayerStat stat : LeaderboardManager.retrieveInfo(skillName, pageNumber, 15)) {
+                String playerName = stat.name;
+                playerName = (playerName.equals(player.getName()) ? ChatColor.GOLD : "") + playerName;
+
+                objective.getScore(server.getOfflinePlayer(playerName)).setScore(stat.statVal);
+            }
         }
 
         objective.setDisplayName(objective.getDisplayName() + " (" + startPosition + " - " + endPosition + ")");
