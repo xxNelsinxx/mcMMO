@@ -27,25 +27,26 @@ public class McstatsCommand implements TabExecutor {
                 McMMOPlayer mcMMOPlayer = UserManager.getPlayer(sender.getName());
                 Player player = mcMMOPlayer.getPlayer();
 
-                if (Config.getInstance().getScoreboardsEnabled()) {
+                if (Config.getInstance().getMcstatsScoreboardsEnabled()) {
                     ScoreboardManager.setupPlayerStatsScoreboard(player.getName());
                     ScoreboardManager.enablePlayerStatsScoreboard(mcMMOPlayer);
                 }
-
-                player.sendMessage(LocaleLoader.getString("Stats.Own.Stats"));
-                player.sendMessage(LocaleLoader.getString("mcMMO.NoSkillNote"));
-
-                CommandUtils.printGatheringSkills(player);
-                CommandUtils.printCombatSkills(player);
-                CommandUtils.printMiscSkills(player);
-
-                int powerLevelCap = Config.getInstance().getPowerLevelCap();
-
-                if (powerLevelCap != Integer.MAX_VALUE) {
-                    player.sendMessage(LocaleLoader.getString("Commands.PowerLevel.Capped", UserManager.getPlayer(player).getPowerLevel(), powerLevelCap));
-                }
                 else {
-                    player.sendMessage(LocaleLoader.getString("Commands.PowerLevel", UserManager.getPlayer(player).getPowerLevel()));
+                    player.sendMessage(LocaleLoader.getString("Stats.Own.Stats"));
+                    player.sendMessage(LocaleLoader.getString("mcMMO.NoSkillNote"));
+
+                    CommandUtils.printGatheringSkills(player);
+                    CommandUtils.printCombatSkills(player);
+                    CommandUtils.printMiscSkills(player);
+
+                    int powerLevelCap = Config.getInstance().getPowerLevelCap();
+
+                    if (powerLevelCap != Integer.MAX_VALUE) {
+                        player.sendMessage(LocaleLoader.getString("Commands.PowerLevel.Capped", UserManager.getPlayer(player).getPowerLevel(), powerLevelCap));
+                    }
+                    else {
+                        player.sendMessage(LocaleLoader.getString("Commands.PowerLevel", UserManager.getPlayer(player).getPowerLevel()));
+                    }
                 }
 
                 return true;

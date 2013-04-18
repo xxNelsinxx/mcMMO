@@ -72,14 +72,21 @@ public class ScoreboardManager {
 
     public static void enablePlayerStatsScoreboard(McMMOPlayer mcMMOPlayer) {
         Player player = mcMMOPlayer.getPlayer();
-        Scoreboard scoreboard = PLAYER_STATS_SCOREBOARDS.get(player.getName());
+        Scoreboard oldScoreboard = player.getScoreboard();
+        Scoreboard newScoreboard = PLAYER_STATS_SCOREBOARDS.get(player.getName());
 
-        if (player.getScoreboard() == scoreboard) {
+        if (oldScoreboard == newScoreboard) {
             return;
         }
 
         updatePlayerStatsScores(mcMMOPlayer);
-        player.setScoreboard(scoreboard);
+        player.setScoreboard(newScoreboard);
+
+        int displayTime = Config.getInstance().getMcstatsScoreboardTime();
+
+        if (displayTime != -1) {
+            new ScoreboardChangeTask(player, oldScoreboard).runTaskLater(mcMMO.p, displayTime * 20);
+        }
     }
 
     public static void enableGlobalStatsScoreboard(Player player, String skillName, int pageNumber) {
@@ -109,7 +116,10 @@ public class ScoreboardManager {
     }
 
     public static void updatePlayerStatsScore(McMMOPlayer mcMMOPlayer, SkillType skill) {
-        playerStats.getScore(mcMMO.p.getServer().getOfflinePlayer(SkillUtils.getSkillName(skill))).setScore(mcMMOPlayer.getProfile().getSkillLevel(skill));
+        Server server = mcMMO.p.getServer();
+
+        playerStats.getScore(server.getOfflinePlayer(SkillUtils.getSkillName(skill))).setScore(mcMMOPlayer.getProfile().getSkillLevel(skill));
+        playerStats.getScore(server.getOfflinePlayer(ChatColor.GOLD + "Power Level")).setScore(mcMMOPlayer.getPowerLevel());
     }
 
     private static void updatePlayerStatsScores(McMMOPlayer mcMMOPlayer) {
@@ -123,6 +133,8 @@ public class ScoreboardManager {
 
             playerStats.getScore(server.getOfflinePlayer(SkillUtils.getSkillName(skill))).setScore(profile.getSkillLevel(skill));
         }
+
+        playerStats.getScore(server.getOfflinePlayer(ChatColor.GOLD + "Power Level")).setScore(mcMMOPlayer.getPowerLevel());
     }
 
     private static void updateGlobalStatsScores(Player player, Objective objective, String skillName, int pageNumber) {

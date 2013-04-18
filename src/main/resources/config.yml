@@ -28,8 +28,11 @@ General:
     Config_Update_Overwrite: true
 
 Scoreboards:
-    # Should mcMMO use the scoreboards when available?
-    Use_Scoreboards: true
+    Mcstats:
+        # Should mcMMO use scoreboards for /mcstats?
+        Use: true
+        # Amount of time (in seconds) to display. To display permanently, set to -1
+        Display_Time: 10
     Mctop:
         # Should mcMMO use scoreboards for /mctop?
         Use: true

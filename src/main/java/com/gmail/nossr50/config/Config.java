@@ -62,7 +62,8 @@ public class Config extends AutoUpdateConfigLoader {
     public int getMobHealthbarTime() { return config.getInt("Mob_Healthbar.Display_Time", 3); }
 
     /* Scoreboards */
-    public boolean getScoreboardsEnabled() { return config.getBoolean("Scoreboards.Use_Scoreboards", true); }
+    public boolean getMcstatsScoreboardsEnabled() { return config.getBoolean("Scoreboards.Mcstats.Use", true); }
+    public int getMcstatsScoreboardTime() { return config.getInt("Scoreboards.Mctop.Display_Time", 10); }
 
     public boolean getMctopScoreboardEnabled() { return config.getBoolean("Scoreboards.Mctop.Use", true); }
     public int getMctopScoreboardTime() { return config.getInt("Scoreboards.Mctop.Display_Time", 10); }
