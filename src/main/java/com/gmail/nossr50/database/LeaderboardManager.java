@@ -280,13 +280,7 @@ public final class LeaderboardManager {
         return purgedUsers;
     }
 
-    public static void purgeOldFlatfile() {
-        mcMMO.p.getLogger().info("Purging old users...");
-        int purgedUsers = removeOldFlatfileUsers();
-        mcMMO.p.getLogger().info("Purged " + purgedUsers + " users from the database.");
-    }
-
-    private static int removeOldFlatfileUsers() {
+    public static int removeOldFlatfileUsers() {
         int removedPlayers = 0;
         long currentTime = System.currentTimeMillis();
         long purgeTime = ONE_MONTH * Config.getInstance().getOldUsersCutoff();

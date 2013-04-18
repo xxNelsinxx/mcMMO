@@ -113,6 +113,8 @@ public class mcMMO extends JavaPlugin {
             setupSpout();
             loadConfigFiles();
 
+            databaseManager = new McMMODatabaseManager(this, Config.getInstance().getUseMySQL());
+
             if (!Config.getInstance().getUseMySQL()) {
                 UserManager.loadUsers();
             }

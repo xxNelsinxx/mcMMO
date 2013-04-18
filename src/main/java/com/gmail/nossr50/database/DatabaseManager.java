@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -487,36 +488,28 @@ public final class DatabaseManager {
         HashMap<Integer, ArrayList<String>> usernames = read("SELECT u.user FROM " + tablePrefix + "skills AS s, " + tablePrefix + "users AS u WHERE s.user_id = u.id AND (s.taming+s.mining+s.woodcutting+s.repair+s.unarmed+s.herbalism+s.excavation+s.archery+s.swords+s.axes+s.acrobatics+s.fishing) = 0");
         write("DELETE FROM " + tablePrefix + "users WHERE " + tablePrefix + "users.id IN (SELECT * FROM (SELECT u.id FROM " + tablePrefix + "skills AS s, " + tablePrefix + "users AS u WHERE s.user_id = u.id AND (s.taming+s.mining+s.woodcutting+s.repair+s.unarmed+s.herbalism+s.excavation+s.archery+s.swords+s.axes+s.acrobatics+s.fishing) = 0) AS p)");
 
+        return processPurge(usernames.values());
+    }
+
+    public static int purgeOldSQL() {
+        long currentTime = System.currentTimeMillis();
+        long purgeTime = ONE_MONTH * Config.getInstance().getOldUsersCutoff();
+
+        HashMap<Integer, ArrayList<String>> usernames = read("SELECT user FROM " + tablePrefix + "users WHERE ((" + currentTime + " - lastlogin*1000) > " + purgeTime + ")");
+        write("DELETE FROM " + tablePrefix + "users WHERE " + tablePrefix + "users.id IN (SELECT * FROM (SELECT id FROM " + tablePrefix + "users WHERE ((" + currentTime + " - lastlogin*1000) > " + purgeTime + ")) AS p)");
+
+        return processPurge(usernames.values());
+    }
+
+    private static int processPurge(Collection<ArrayList<String>> usernames) {
         int purgedUsers = 0;
 
-        for (ArrayList<String> user : usernames.values()) {
+        for (ArrayList<String> user : usernames) {
             Misc.profileCleanup(user.get(0));
             purgedUsers++;
         }
 
         return purgedUsers;
-    }
-
-    public static void purgeOldSQL() {
-        mcMMO.p.getLogger().info("Purging old users...");
-        long currentTime = System.currentTimeMillis();
-        long purgeTime = ONE_MONTH * Config.getInstance().getOldUsersCutoff();
-        HashMap<Integer, ArrayList<String>> usernames = read("SELECT user FROM " + tablePrefix + "users WHERE ((" + currentTime + " - lastlogin*1000) > " + purgeTime + ")");
-        write("DELETE FROM " + tablePrefix + "users WHERE " + tablePrefix + "users.id IN (SELECT * FROM (SELECT id FROM " + tablePrefix + "users WHERE ((" + currentTime + " - lastlogin*1000) > " + purgeTime + ")) AS p)");
-
-        int purgedUsers = 0;
-        for (int i = 1; i <= usernames.size(); i++) {
-            String playerName = usernames.get(i).get(0);
-
-            if (playerName == null) {
-                continue;
-            }
-
-            Misc.profileCleanup(playerName);
-            purgedUsers++;
-        }
-
-        mcMMO.p.getLogger().info("Purged " + purgedUsers + " users from the database.");
     }
 
     /**

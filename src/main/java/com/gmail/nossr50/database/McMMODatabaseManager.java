@@ -15,4 +15,9 @@ public class McMMODatabaseManager {
         plugin.getLogger().info("Purging powerless users...");
         plugin.getLogger().info("Purged " + (isUsingSQL ? DatabaseManager.purgePowerlessSQL() : LeaderboardManager.purgePowerlessFlatfile()) + " users from the database.");
     }
+
+    public void purgeOldUsers() {
+        plugin.getLogger().info("Purging old users...");
+        plugin.getLogger().info("Purged " + (isUsingSQL ? DatabaseManager.purgeOldSQL() : LeaderboardManager.removeOldFlatfileUsers()) + " users from the database.");
+    }
 }
