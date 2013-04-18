@@ -266,7 +266,7 @@ public final class LeaderboardManager {
         return worked;
     }
 
-    public static void purgePowerlessFlatfile() {
+    public static int purgePowerlessFlatfile() {
         mcMMO.p.getLogger().info("Purging powerless users...");
 
         int purgedUsers = 0;
@@ -277,7 +277,7 @@ public final class LeaderboardManager {
             }
         }
 
-        mcMMO.p.getLogger().info("Purged " + purgedUsers + " users from the database.");
+        return purgedUsers;
     }
 
     public static void purgeOldFlatfile() {

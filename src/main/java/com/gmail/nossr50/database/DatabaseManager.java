@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -482,30 +483,18 @@ public final class DatabaseManager {
         return skills;
     }
 
-    public static void purgePowerlessSQL() {
-        mcMMO.p.getLogger().info("Purging powerless users...");
-        HashMap<Integer, ArrayList<String>> usernames;
-
-        usernames = read("SELECT u.user FROM " + tablePrefix + "skills AS s, " + tablePrefix + "users AS u " + "WHERE s.user_id = u.id AND " +
-                "(s.taming+s.mining+s.woodcutting+s.repair+s.unarmed+s.herbalism+s.excavation+s.archery+s.swords+s.axes+s.acrobatics+s.fishing) = 0");
-
-        write("DELETE FROM " + tablePrefix + "users WHERE " + tablePrefix + "users.id IN (SELECT * FROM " +
-                "(SELECT u.id FROM " + tablePrefix + "skills AS s, " + tablePrefix + "users AS u " + "WHERE s.user_id = u.id " +
-                "AND (s.taming+s.mining+s.woodcutting+s.repair+s.unarmed+s.herbalism+s.excavation+s.archery+s.swords+s.axes+s.acrobatics+s.fishing) = 0) AS p)");
+    public static int purgePowerlessSQL() {
+        HashMap<Integer, ArrayList<String>> usernames = read("SELECT u.user FROM " + tablePrefix + "skills AS s, " + tablePrefix + "users AS u WHERE s.user_id = u.id AND (s.taming+s.mining+s.woodcutting+s.repair+s.unarmed+s.herbalism+s.excavation+s.archery+s.swords+s.axes+s.acrobatics+s.fishing) = 0");
+        write("DELETE FROM " + tablePrefix + "users WHERE " + tablePrefix + "users.id IN (SELECT * FROM (SELECT u.id FROM " + tablePrefix + "skills AS s, " + tablePrefix + "users AS u WHERE s.user_id = u.id AND (s.taming+s.mining+s.woodcutting+s.repair+s.unarmed+s.herbalism+s.excavation+s.archery+s.swords+s.axes+s.acrobatics+s.fishing) = 0) AS p)");
 
         int purgedUsers = 0;
-        for (int i = 1; i <= usernames.size(); i++) {
-            String playerName = usernames.get(i).get(0);
 
-            if (playerName == null || mcMMO.p.getServer().getOfflinePlayer(playerName).isOnline()) {
-                continue;
-            }
-
-            Misc.profileCleanup(playerName);
+        for (ArrayList<String> user : usernames.values()) {
+            Misc.profileCleanup(user.get(0));
             purgedUsers++;
         }
 
-        mcMMO.p.getLogger().info("Purged " + purgedUsers + " users from the database.");
+        return purgedUsers;
     }
 
     public static void purgeOldSQL() {

@@ -24,6 +24,7 @@ import com.gmail.nossr50.config.spout.SpoutConfig;
 import com.gmail.nossr50.config.treasure.TreasureConfig;
 import com.gmail.nossr50.database.DatabaseManager;
 import com.gmail.nossr50.database.LeaderboardManager;
+import com.gmail.nossr50.database.McMMODatabaseManager;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.datatypes.skills.AbilityType;
 import com.gmail.nossr50.listeners.BlockListener;
@@ -65,8 +66,9 @@ public class mcMMO extends JavaPlugin {
 
     public static mcMMO p;
 
-    public static ChunkManager  placeStore;
+    public static ChunkManager placeStore;
     public static RepairableManager repairableManager;
+    public static McMMODatabaseManager databaseManager;
 
     // Jar Stuff
     public static File mcmmo;
