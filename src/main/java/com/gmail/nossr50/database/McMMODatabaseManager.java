@@ -1,6 +1,7 @@
 package com.gmail.nossr50.database;
 
 import com.gmail.nossr50.mcMMO;
+import com.gmail.nossr50.util.Misc;
 
 public class McMMODatabaseManager {
     private final mcMMO plugin;
@@ -19,5 +20,14 @@ public class McMMODatabaseManager {
     public void purgeOldUsers() {
         plugin.getLogger().info("Purging old users...");
         plugin.getLogger().info("Purged " + (isUsingSQL ? DatabaseManager.purgeOldSQL() : LeaderboardManager.removeOldFlatfileUsers()) + " users from the database.");
+    }
+
+    public boolean removeUser(String playerName) {
+        if (isUsingSQL ? DatabaseManager.removeUserSQL(playerName) : LeaderboardManager.removeFlatFileUser(playerName)) {
+            Misc.profileCleanup(playerName);
+            return true;
+        }
+
+        return false;
     }
 }

@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -189,6 +188,10 @@ public final class DatabaseManager {
                 }
             }
         }
+    }
+
+    public static boolean removeUserSQL(String playerName) {
+        return DatabaseManager.update("DELETE FROM " + tablePrefix + "users WHERE " + tablePrefix + "users.user = '" + playerName + "'") != 0;
     }
 
     /**
