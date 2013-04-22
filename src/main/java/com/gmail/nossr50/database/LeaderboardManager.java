@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.config.Config;
@@ -203,14 +204,6 @@ public final class LeaderboardManager {
         return info;
     }
 
-    public static int[] getPlayerRank(String playerName) {
-        return getPlayerRank(playerName, powerLevels);
-    }
-
-    public static int[] getPlayerRank(String playerName, SkillType skillType) {
-        return getPlayerRank(playerName, playerStatHash.get(skillType));
-    }
-
     public static boolean removeFlatFileUser(String playerName) {
         boolean worked = false;
 
@@ -344,22 +337,36 @@ public final class LeaderboardManager {
         return removedPlayers;
     }
 
-    private static int[] getPlayerRank(String playerName, List<PlayerStat> statsList) {
+    private static Integer getPlayerRank(String playerName, List<PlayerStat> statsList) {
         int currentPos = 1;
 
         if (statsList == null) {
-            return new int[] {0, 0};
+            return null;
         }
 
         for (PlayerStat stat : statsList) {
             if (stat.name.equalsIgnoreCase(playerName)) {
-                return new int[] {currentPos, stat.statVal};
+                return currentPos;
             }
 
             currentPos++;
         }
 
-        return new int[] {0, 0};
+        return null;
+    }
+
+    public static Map<String, Integer> getPlayerRanks(String playerName) {
+        updateLeaderboards();
+
+        Map<String, Integer> skills = new HashMap<String, Integer>();
+
+        for (SkillType skill : SkillType.values()) {
+            skills.put(playerName, getPlayerRank(playerName, playerStatHash.get(skill)));
+        }
+
+        skills.put("ALL", getPlayerRank(playerName, powerLevels));
+
+        return skills;
     }
 
     private static class SkillComparator implements Comparator<PlayerStat> {
