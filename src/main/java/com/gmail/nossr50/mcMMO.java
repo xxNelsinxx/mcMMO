@@ -115,10 +115,6 @@ public class mcMMO extends JavaPlugin {
 
             databaseManager = new McMMODatabaseManager(this, Config.getInstance().getUseMySQL());
 
-            if (!Config.getInstance().getUseMySQL()) {
-                UserManager.loadUsers();
-            }
-
             registerEvents();
             registerCustomRecipes();
 
