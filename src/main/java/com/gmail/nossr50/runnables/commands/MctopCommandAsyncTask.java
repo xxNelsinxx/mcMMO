@@ -18,7 +18,7 @@ public class MctopCommandAsyncTask extends BukkitRunnable {
 
     public MctopCommandAsyncTask(int page, String query, CommandSender sender) {
         this.page = page;
-        this.query = query;
+        this.query = query.equalsIgnoreCase("ALL") ? "taming+mining+woodcutting+repair+unarmed+herbalism+excavation+archery+swords+axes+acrobatics+fishing" : query;
         this.sender = sender;
     }
 

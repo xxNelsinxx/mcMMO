@@ -26,17 +26,14 @@ public class MctopCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        boolean useMySQL = Config.getInstance().getUseMySQL();
-
-
         switch (args.length) {
             case 0:
-                display(1, "ALL", sender, useMySQL, command);
+                display(1, "ALL", sender, command);
                 return true;
 
             case 1:
                 if (StringUtils.isInt(args[0])) {
-                    display(Math.abs(Integer.parseInt(args[0])), "ALL", sender, useMySQL, command);
+                    display(Math.abs(Integer.parseInt(args[0])), "ALL", sender, command);
                     return true;
                 }
 
@@ -44,7 +41,7 @@ public class MctopCommand implements TabExecutor {
                     return true;
                 }
 
-                display(1, skill.toString(), sender, useMySQL, command);
+                display(1, skill.toString(), sender, command);
                 return true;
 
             case 2:
@@ -56,7 +53,7 @@ public class MctopCommand implements TabExecutor {
                     return true;
                 }
 
-                display(Math.abs(Integer.parseInt(args[1])), skill.toString(), sender, useMySQL, command);
+                display(Math.abs(Integer.parseInt(args[1])), skill.toString(), sender, command);
                 return true;
 
             default:
@@ -74,19 +71,14 @@ public class MctopCommand implements TabExecutor {
         }
     }
 
-    private void display(int page, String skill, CommandSender sender, boolean sql, Command command) {
+    private void display(int page, String skill, CommandSender sender, Command command) {
         if (!skill.equalsIgnoreCase("all") && !Permissions.mctop(sender, this.skill)) {
             sender.sendMessage(command.getPermissionMessage());
             return;
         }
 
-        if (sql) {
-            if (skill.equalsIgnoreCase("all")) {
-                sqlDisplay(page, "taming+mining+woodcutting+repair+unarmed+herbalism+excavation+archery+swords+axes+acrobatics+fishing", sender);
-            }
-            else {
-                sqlDisplay(page, skill, sender);
-            }
+        if (Config.getInstance().getUseMySQL()) {
+            sqlDisplay(page, skill, sender);
         }
         else {
             flatfileDisplay(page, skill, sender);
