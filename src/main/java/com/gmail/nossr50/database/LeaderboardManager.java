@@ -73,65 +73,18 @@ public final class LeaderboardManager {
 
                 players.add(playerName);
 
-                if (data.length > 1 && StringUtils.isInt(data[1])) {
-                    mining.add(new PlayerStat(playerName, Integer.parseInt(data[1])));
-                    powerLevel += Integer.parseInt(data[1]);
-                }
-
-                if (data.length > 5 && StringUtils.isInt(data[5])) {
-                    woodcutting.add(new PlayerStat(playerName, Integer.parseInt(data[5])));
-                    powerLevel += Integer.parseInt(data[5]);
-                }
-
-                if (data.length > 7 && StringUtils.isInt(data[7])) {
-                    repair.add(new PlayerStat(playerName, Integer.parseInt(data[7])));
-                    powerLevel += Integer.parseInt(data[7]);
-                }
-
-                if (data.length > 8 && StringUtils.isInt(data[8])) {
-                    unarmed.add(new PlayerStat(playerName, Integer.parseInt(data[8])));
-                    powerLevel += Integer.parseInt(data[8]);
-                }
-
-                if (data.length > 9 && StringUtils.isInt(data[9])) {
-                    herbalism.add(new PlayerStat(playerName, Integer.parseInt(data[9])));
-                    powerLevel += Integer.parseInt(data[9]);
-                }
-
-                if (data.length > 10 && StringUtils.isInt(data[10])) {
-                    excavation.add(new PlayerStat(playerName, Integer.parseInt(data[10])));
-                    powerLevel += Integer.parseInt(data[10]);
-                }
-
-                if (data.length > 11 && StringUtils.isInt(data[11])) {
-                    archery.add(new PlayerStat(playerName, Integer.parseInt(data[11])));
-                    powerLevel += Integer.parseInt(data[11]);
-                }
-
-                if (data.length > 12 && StringUtils.isInt(data[12])) {
-                    swords.add(new PlayerStat(playerName, Integer.parseInt(data[12])));
-                    powerLevel += Integer.parseInt(data[12]);
-                }
-
-                if (data.length > 13 && StringUtils.isInt(data[13])) {
-                    axes.add(new PlayerStat(playerName, Integer.parseInt(data[13])));
-                    powerLevel += Integer.parseInt(data[13]);
-                }
-
-                if (data.length > 14 && StringUtils.isInt(data[14])) {
-                    acrobatics.add(new PlayerStat(playerName, Integer.parseInt(data[14])));
-                    powerLevel += Integer.parseInt(data[14]);
-                }
-
-                if (data.length > 24 && StringUtils.isInt(data[24])) {
-                    taming.add(new PlayerStat(playerName, Integer.parseInt(data[24])));
-                    powerLevel += Integer.parseInt(data[24]);
-                }
-
-                if (data.length > 34 && StringUtils.isInt(data[34])) {
-                    fishing.add(new PlayerStat(playerName, Integer.parseInt(data[34])));
-                    powerLevel += Integer.parseInt(data[34]);
-                }
+                powerLevel += loadStat(mining, playerName, data[1], data.length, 1);
+                powerLevel += loadStat(woodcutting, playerName, data[5], data.length, 5);
+                powerLevel += loadStat(repair, playerName, data[7], data.length, 7);
+                powerLevel += loadStat(unarmed, playerName, data[8], data.length, 8);
+                powerLevel += loadStat(herbalism, playerName, data[9], data.length, 9);
+                powerLevel += loadStat(excavation, playerName, data[10], data.length, 10);
+                powerLevel += loadStat(archery, playerName, data[11], data.length, 11);
+                powerLevel += loadStat(swords, playerName, data[12], data.length, 12);
+                powerLevel += loadStat(axes, playerName, data[13], data.length, 13);
+                powerLevel += loadStat(acrobatics, playerName, data[14], data.length, 14);
+                powerLevel += loadStat(taming, playerName, data[24], data.length, 24);
+                powerLevel += loadStat(fishing, playerName, data[34], data.length, 34);
 
                 powerLevels.add(new PlayerStat(playerName, powerLevel));
             }
@@ -367,6 +320,16 @@ public final class LeaderboardManager {
         skills.put("ALL", getPlayerRank(playerName, powerLevels));
 
         return skills;
+    }
+
+    private static int loadStat(List<PlayerStat> statList, String playerName, String dataValue, int dataLength, int dataIndex) {
+        if (dataLength > dataIndex && StringUtils.isInt(dataValue)) {
+            int statValue = Integer.parseInt(dataValue);
+            statList.add(new PlayerStat(playerName, statValue));
+            return statValue;
+        }
+
+        return 0;
     }
 
     private static class SkillComparator implements Comparator<PlayerStat> {
