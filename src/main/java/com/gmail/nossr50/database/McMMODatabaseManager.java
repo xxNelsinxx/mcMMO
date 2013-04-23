@@ -15,9 +15,14 @@ public class McMMODatabaseManager {
         this.plugin = plugin;
         this.isUsingSQL = isUsingSQL;
 
-        if (!isUsingSQL) {
+        if (isUsingSQL) {
+            DatabaseManager.checkConnected();
+            DatabaseManager.createStructure();
+        }
+        else {
             usersFile = new File(mcMMO.getUsersFilePath());
             createFlatfileDatabase();
+            LeaderboardManager.updateLeaderboards();
         }
     }
 

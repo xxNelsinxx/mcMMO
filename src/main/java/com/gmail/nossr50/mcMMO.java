@@ -120,16 +120,6 @@ public class mcMMO extends JavaPlugin {
 
             PartyManager.loadParties();
 
-            // Setup the leader boards
-            if (Config.getInstance().getUseMySQL()) {
-                // TODO: Why do we have to check for a connection that hasn't be made yet?
-                DatabaseManager.checkConnected();
-                DatabaseManager.createStructure();
-            }
-            else {
-                LeaderboardManager.updateLeaderboards();
-            }
-
             for (Player player : getServer().getOnlinePlayers()) {
                 UserManager.addUser(player); // In case of reload add all users back into UserManager
             }
