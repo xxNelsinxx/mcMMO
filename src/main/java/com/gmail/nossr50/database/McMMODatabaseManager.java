@@ -48,6 +48,7 @@ public class McMMODatabaseManager {
         usersFile.getParentFile().mkdir();
 
         try {
+            plugin.debug("Creating mcmmo.users file...");
             new File(mcMMO.getUsersFilePath()).createNewFile();
         }
         catch (IOException e) {
