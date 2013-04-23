@@ -22,8 +22,6 @@ import com.gmail.nossr50.config.mods.CustomEntityConfig;
 import com.gmail.nossr50.config.mods.CustomToolConfig;
 import com.gmail.nossr50.config.spout.SpoutConfig;
 import com.gmail.nossr50.config.treasure.TreasureConfig;
-import com.gmail.nossr50.database.DatabaseManager;
-import com.gmail.nossr50.database.LeaderboardManager;
 import com.gmail.nossr50.database.McMMODatabaseManager;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.datatypes.skills.AbilityType;
