@@ -18,14 +18,30 @@ public class McMMOPlayerXpGainEvent extends McMMOPlayerExperienceEvent {
     /**
      * @return The amount of experience gained in this event
      */
-    public float getXpGained() {
+    public float getRawXpGained() {
         return xpGained;
     }
 
     /**
      * @param xpGained int amount of experience gained in this event
      */
-    public void setXpGained(float xpGained) {
+    @Deprecated
+    public int getXpGained() {
+        return (int) xpGained;
+    }
+
+    /**
+     * @param xpGained int amount of experience gained in this event
+     */
+    public void setRawXpGained(float xpGained) {
+        this.xpGained = xpGained;
+    }
+
+    /**
+     * @param xpGained int amount of experience gained in this event
+     */
+    @Deprecated
+    public void setXpGained(int xpGained) {
         this.xpGained = xpGained;
     }
 }
