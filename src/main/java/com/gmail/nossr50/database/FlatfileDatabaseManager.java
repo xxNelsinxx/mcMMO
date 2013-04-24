@@ -36,6 +36,7 @@ public final class FlatfileDatabaseManager {
             return;
         }
 
+        String usersFilePath = mcMMO.getUsersFilePath();
         lastUpdate = System.currentTimeMillis(); // Log when the last update was run
         powerLevels.clear(); // Clear old values from the power levels
 
@@ -55,8 +56,7 @@ public final class FlatfileDatabaseManager {
 
         // Read from the FlatFile database and fill our arrays with information
         try {
-            FileReader file = new FileReader(mcMMO.getUsersFilePath());
-            BufferedReader in = new BufferedReader(file);
+            BufferedReader in = new BufferedReader(new FileReader(usersFilePath));
             String line = "";
             ArrayList<String> players = new ArrayList<String>();
 
@@ -73,25 +73,25 @@ public final class FlatfileDatabaseManager {
 
                 players.add(playerName);
 
-                powerLevel += loadStat(mining, playerName, data[1], data.length, 1);
-                powerLevel += loadStat(woodcutting, playerName, data[5], data.length, 5);
-                powerLevel += loadStat(repair, playerName, data[7], data.length, 7);
-                powerLevel += loadStat(unarmed, playerName, data[8], data.length, 8);
-                powerLevel += loadStat(herbalism, playerName, data[9], data.length, 9);
-                powerLevel += loadStat(excavation, playerName, data[10], data.length, 10);
-                powerLevel += loadStat(archery, playerName, data[11], data.length, 11);
-                powerLevel += loadStat(swords, playerName, data[12], data.length, 12);
-                powerLevel += loadStat(axes, playerName, data[13], data.length, 13);
-                powerLevel += loadStat(acrobatics, playerName, data[14], data.length, 14);
-                powerLevel += loadStat(taming, playerName, data[24], data.length, 24);
-                powerLevel += loadStat(fishing, playerName, data[34], data.length, 34);
+                powerLevel += loadStat(mining, playerName, data, 1);
+                powerLevel += loadStat(woodcutting, playerName, data, 5);
+                powerLevel += loadStat(repair, playerName, data, 7);
+                powerLevel += loadStat(unarmed, playerName, data, 8);
+                powerLevel += loadStat(herbalism, playerName, data, 9);
+                powerLevel += loadStat(excavation, playerName, data, 10);
+                powerLevel += loadStat(archery, playerName, data, 11);
+                powerLevel += loadStat(swords, playerName, data, 12);
+                powerLevel += loadStat(axes, playerName, data, 13);
+                powerLevel += loadStat(acrobatics, playerName, data, 14);
+                powerLevel += loadStat(taming, playerName, data, 24);
+                powerLevel += loadStat(fishing, playerName, data, 34);
 
                 powerLevels.add(new PlayerStat(playerName, powerLevel));
             }
             in.close();
         }
         catch (Exception e) {
-            mcMMO.p.getLogger().severe("Exception while reading " + mcMMO.getUsersFilePath() + " (Are you sure you formatted it correctly?)" + e.toString());
+            mcMMO.p.getLogger().severe("Exception while reading " + usersFilePath + " (Are you sure you formatted it correctly?)" + e.toString());
         }
 
         SkillComparator c = new SkillComparator();
@@ -322,9 +322,10 @@ public final class FlatfileDatabaseManager {
         return skills;
     }
 
-    private static int loadStat(List<PlayerStat> statList, String playerName, String dataValue, int dataLength, int dataIndex) {
-        if (dataLength > dataIndex && StringUtils.isInt(dataValue)) {
-            int statValue = Integer.parseInt(dataValue);
+    private static int loadStat(List<PlayerStat> statList, String playerName, String[] data, int dataIndex) {
+        if (data.length > dataIndex) {
+            int statValue = Integer.parseInt(data[dataIndex]);
+
             statList.add(new PlayerStat(playerName, statValue));
             return statValue;
         }
