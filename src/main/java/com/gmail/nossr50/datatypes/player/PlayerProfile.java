@@ -12,7 +12,7 @@ import java.util.Set;
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.config.spout.SpoutConfig;
-import com.gmail.nossr50.database.DatabaseManager;
+import com.gmail.nossr50.database.SQLDatabaseManager;
 import com.gmail.nossr50.datatypes.MobHealthbarType;
 import com.gmail.nossr50.datatypes.skills.AbilityType;
 import com.gmail.nossr50.datatypes.skills.SkillType;
@@ -264,16 +264,16 @@ public class PlayerProfile {
     private boolean loadMySQL() {
         String tablePrefix = Config.getInstance().getMySQLTablePrefix();
 
-        userId = DatabaseManager.getInt("SELECT id FROM " + tablePrefix + "users WHERE user = '" + playerName + "'");
+        userId = SQLDatabaseManager.getInt("SELECT id FROM " + tablePrefix + "users WHERE user = '" + playerName + "'");
 
         if (userId == 0) {
             return false;
         }
 
-        ArrayList<String> hudValues = DatabaseManager.read("SELECT hudtype, mobhealthbar FROM " + tablePrefix + "huds WHERE user_id = " + userId).get(1);
+        ArrayList<String> hudValues = SQLDatabaseManager.read("SELECT hudtype, mobhealthbar FROM " + tablePrefix + "huds WHERE user_id = " + userId).get(1);
 
         if (hudValues == null) {
-            DatabaseManager.write("INSERT INTO " + tablePrefix + "huds (user_id) VALUES (" + userId + ")");
+            SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "huds (user_id) VALUES (" + userId + ")");
             mcMMO.p.getLogger().warning(playerName + "does not exist in the HUD table. Their HUDs will be reset.");
         }
         else {
@@ -281,10 +281,10 @@ public class PlayerProfile {
             mobHealthbarType = MobHealthbarType.valueOf(hudValues.get(1));
         }
 
-        ArrayList<String> cooldownValues = DatabaseManager.read("SELECT mining, woodcutting, unarmed, herbalism, excavation, swords, axes, blast_mining FROM " + tablePrefix + "cooldowns WHERE user_id = " + userId).get(1);
+        ArrayList<String> cooldownValues = SQLDatabaseManager.read("SELECT mining, woodcutting, unarmed, herbalism, excavation, swords, axes, blast_mining FROM " + tablePrefix + "cooldowns WHERE user_id = " + userId).get(1);
 
         if (cooldownValues == null) {
-            DatabaseManager.write("INSERT INTO " + tablePrefix + "cooldowns (user_id) VALUES (" + userId + ")");
+            SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "cooldowns (user_id) VALUES (" + userId + ")");
             mcMMO.p.getLogger().warning(playerName + "does not exist in the cooldown table. Their cooldowns will be reset.");
         }
         else {
@@ -298,10 +298,10 @@ public class PlayerProfile {
             skillsDATS.put(AbilityType.BLAST_MINING, Integer.valueOf(cooldownValues.get(7)));
         }
 
-        ArrayList<String> statValues = DatabaseManager.read("SELECT taming, mining, repair, woodcutting, unarmed, herbalism, excavation, archery, swords, axes, acrobatics, fishing FROM " + tablePrefix + "skills WHERE user_id = " + userId).get(1);
+        ArrayList<String> statValues = SQLDatabaseManager.read("SELECT taming, mining, repair, woodcutting, unarmed, herbalism, excavation, archery, swords, axes, acrobatics, fishing FROM " + tablePrefix + "skills WHERE user_id = " + userId).get(1);
 
         if (statValues == null) {
-            DatabaseManager.write("INSERT INTO " + tablePrefix + "skills (user_id) VALUES (" + userId + ")");
+            SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "skills (user_id) VALUES (" + userId + ")");
             mcMMO.p.getLogger().warning(playerName + "does not exist in the skills table. Their stats will be reset.");
         }
         else {
@@ -319,10 +319,10 @@ public class PlayerProfile {
             skills.put(SkillType.FISHING, Integer.valueOf(statValues.get(11)));
         }
 
-        ArrayList<String> experienceValues = DatabaseManager.read("SELECT taming, mining, repair, woodcutting, unarmed, herbalism, excavation, archery, swords, axes, acrobatics, fishing FROM " + tablePrefix + "experience WHERE user_id = " + userId).get(1);
+        ArrayList<String> experienceValues = SQLDatabaseManager.read("SELECT taming, mining, repair, woodcutting, unarmed, herbalism, excavation, archery, swords, axes, acrobatics, fishing FROM " + tablePrefix + "experience WHERE user_id = " + userId).get(1);
 
         if (experienceValues == null) {
-            DatabaseManager.write("INSERT INTO " + tablePrefix + "experience (user_id) VALUES (" + userId + ")");
+            SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "experience (user_id) VALUES (" + userId + ")");
             mcMMO.p.getLogger().warning(playerName + "does not exist in the experience table. Their experience will be reset.");
         }
         else {
@@ -347,13 +347,13 @@ public class PlayerProfile {
     private void addMySQLPlayer() {
         String tablePrefix = Config.getInstance().getMySQLTablePrefix();
 
-        DatabaseManager.write("INSERT INTO " + tablePrefix + "users (user, lastlogin) VALUES ('" + playerName + "'," + System.currentTimeMillis() / Misc.TIME_CONVERSION_FACTOR + ")");
-        userId = DatabaseManager.getInt("SELECT id FROM " + tablePrefix + "users WHERE user = '" + playerName + "'");
+        SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "users (user, lastlogin) VALUES ('" + playerName + "'," + System.currentTimeMillis() / Misc.TIME_CONVERSION_FACTOR + ")");
+        userId = SQLDatabaseManager.getInt("SELECT id FROM " + tablePrefix + "users WHERE user = '" + playerName + "'");
 
-        DatabaseManager.write("INSERT INTO " + tablePrefix + "huds (user_id) VALUES (" + userId + ")");
-        DatabaseManager.write("INSERT INTO " + tablePrefix + "cooldowns (user_id) VALUES (" + userId + ")");
-        DatabaseManager.write("INSERT INTO " + tablePrefix + "skills (user_id) VALUES (" + userId + ")");
-        DatabaseManager.write("INSERT INTO " + tablePrefix + "experience (user_id) VALUES (" + userId + ")");
+        SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "huds (user_id) VALUES (" + userId + ")");
+        SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "cooldowns (user_id) VALUES (" + userId + ")");
+        SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "skills (user_id) VALUES (" + userId + ")");
+        SQLDatabaseManager.write("INSERT INTO " + tablePrefix + "experience (user_id) VALUES (" + userId + ")");
     }
 
 
@@ -482,12 +482,12 @@ public class PlayerProfile {
         if (Config.getInstance().getUseMySQL()) {
             String tablePrefix = Config.getInstance().getMySQLTablePrefix();
 
-            DatabaseManager.write("UPDATE " + tablePrefix + "users SET lastlogin = " + ((int) (System.currentTimeMillis() / Misc.TIME_CONVERSION_FACTOR)) + " WHERE id = " + userId);
-            DatabaseManager.write("UPDATE " + tablePrefix + "huds SET "
+            SQLDatabaseManager.write("UPDATE " + tablePrefix + "users SET lastlogin = " + ((int) (System.currentTimeMillis() / Misc.TIME_CONVERSION_FACTOR)) + " WHERE id = " + userId);
+            SQLDatabaseManager.write("UPDATE " + tablePrefix + "huds SET "
                     + "  hudtype = " + hudType.toString()
                     + ", mobhealthbar = " + mobHealthbarType.toString()
                     + "  WHERE user_id = " + userId);
-            DatabaseManager.write("UPDATE " + tablePrefix + "cooldowns SET "
+            SQLDatabaseManager.write("UPDATE " + tablePrefix + "cooldowns SET "
                     + "  mining = " + skillsDATS.get(AbilityType.SUPER_BREAKER)
                     + ", woodcutting = " + skillsDATS.get(AbilityType.TREE_FELLER)
                     + ", unarmed = " + skillsDATS.get(AbilityType.BERSERK)
@@ -497,7 +497,7 @@ public class PlayerProfile {
                     + ", axes = " + skillsDATS.get(AbilityType.SKULL_SPLITTER)
                     + ", blast_mining = " + skillsDATS.get(AbilityType.BLAST_MINING)
                     + "  WHERE user_id = " + userId);
-            DatabaseManager.write("UPDATE " + tablePrefix + "skills SET "
+            SQLDatabaseManager.write("UPDATE " + tablePrefix + "skills SET "
                     + "  taming = " + skills.get(SkillType.TAMING)
                     + ", mining = " + skills.get(SkillType.MINING)
                     + ", repair = " + skills.get(SkillType.REPAIR)
@@ -511,7 +511,7 @@ public class PlayerProfile {
                     + ", acrobatics = " + skills.get(SkillType.ACROBATICS)
                     + ", fishing = " + skills.get(SkillType.FISHING)
                     + "  WHERE user_id = " + userId);
-            DatabaseManager.write("UPDATE " + tablePrefix + "experience SET "
+            SQLDatabaseManager.write("UPDATE " + tablePrefix + "experience SET "
                     + "  taming = " + skillsXp.get(SkillType.TAMING)
                     + ", mining = " + skillsXp.get(SkillType.MINING)
                     + ", repair = " + skillsXp.get(SkillType.REPAIR)

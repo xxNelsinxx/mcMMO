@@ -11,7 +11,7 @@ import org.bukkit.util.StringUtil;
 
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.config.Config;
-import com.gmail.nossr50.database.LeaderboardManager;
+import com.gmail.nossr50.database.FlatfileDatabaseManager;
 import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.locale.LocaleLoader;
 import com.gmail.nossr50.runnables.commands.MctopCommandAsyncTask;
@@ -86,7 +86,7 @@ public class MctopCommand implements TabExecutor {
     }
 
     private void flatfileDisplay(int page, String skill, CommandSender sender) {
-        LeaderboardManager.updateLeaderboards(); // Make sure we have the latest information
+        FlatfileDatabaseManager.updateLeaderboards(); // Make sure we have the latest information
 
         if (skill.equalsIgnoreCase("all")) {
             sender.sendMessage(LocaleLoader.getString("Commands.PowerLevel.Leaderboard"));
@@ -97,7 +97,7 @@ public class MctopCommand implements TabExecutor {
 
         int position = (page * 10) - 9;
 
-        for (String playerStat : LeaderboardManager.retrieveInfo(skill, page)) {
+        for (String playerStat : FlatfileDatabaseManager.retrieveInfo(skill, page)) {
             if (playerStat == null) {
                 continue;
             }

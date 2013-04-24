@@ -17,7 +17,7 @@ import com.gmail.nossr50.datatypes.database.PlayerStat;
 import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.util.StringUtils;
 
-public final class LeaderboardManager {
+public final class FlatfileDatabaseManager {
     private static HashMap<SkillType, List<PlayerStat>> playerStatHash = new HashMap<SkillType, List<PlayerStat>>();
     private static List<PlayerStat> powerLevels = new ArrayList<PlayerStat>();
     private static long lastUpdate = 0;
@@ -25,7 +25,7 @@ public final class LeaderboardManager {
     private static final long UPDATE_WAIT_TIME = 600000L; // 10 minutes
     private static final long ONE_MONTH = 2630000000L;
 
-    private LeaderboardManager() {}
+    private FlatfileDatabaseManager() {}
 
     /**
      * Update the leader boards.
